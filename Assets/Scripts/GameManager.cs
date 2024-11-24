@@ -1,16 +1,36 @@
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    CogWheelCollectable cogWheelCollectable;
+    public TextMeshProUGUI cogWheelText;
+
+    public int cogWheelCount = 0;
+
     void Start()
     {
-        
+       
     }
 
-    // Update is called once per frame
+    public void AddCogWheel(int cogWheelValue)
+    {
+        cogWheelCount += cogWheelValue;
+    }
+
+    public void RemoveCogWheel(int cogWheelValue)
+    {
+        cogWheelCount -= cogWheelValue;
+    }
+
+    public void SetCogWheelCount(int newCogWheelCount)
+    {
+        cogWheelCount = newCogWheelCount;
+    }
+
     void Update()
     {
-        
+        cogWheelText.text = " " + cogWheelCount;
     }
 }
