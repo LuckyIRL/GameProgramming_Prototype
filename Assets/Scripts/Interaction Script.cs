@@ -9,7 +9,7 @@ public class InteractionScript : MonoBehaviour
     public UnityEvent enteredTrigger, exitedTrigger, interacted;
 
     private bool insideTrigger;
-    private void OnTriggerEnter2D(Collider2D other)
+    private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.tag == "Player")
         {
@@ -18,7 +18,7 @@ public class InteractionScript : MonoBehaviour
         }
     }
 
-    private void OnTriggerExit2D(Collider2D other)
+    private void OnTriggerExit(Collider other)
     {
         if (other.gameObject.tag == "Player")
         {
