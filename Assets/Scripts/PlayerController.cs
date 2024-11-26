@@ -51,8 +51,8 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void OnAiming()
-    {
+    private void OnAiming() {
+   
         robotInputActions.isAiming = true;
         Debug.Log("Aiming");
     }
