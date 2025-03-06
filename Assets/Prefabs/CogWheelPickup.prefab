@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8096095834883942627}
   - component: {fileID: 1747166949719648986}
   - component: {fileID: 5892432931873446819}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: CogWheel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -113,9 +113,9 @@ GameObject:
   - component: {fileID: 2403796623716076082}
   - component: {fileID: 6500798788370562765}
   - component: {fileID: 7494831995091196437}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: CogWheelPickup
-  m_TagString: Untagged
+  m_TagString: Collectables
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

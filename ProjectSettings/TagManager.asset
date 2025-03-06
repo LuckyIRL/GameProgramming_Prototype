@@ -8,6 +8,7 @@ TagManager:
   - GrapplePoint
   - MagArmPickup
   - MagneticObject
+  - Collectables
   layers:
   - Default
   - TransparentFX
@@ -18,7 +19,7 @@ TagManager:
   - Ground
   - GrappleLayer
   - MagneticObject
-  - 
+  - Collectables
   - 
   - 
   - 
