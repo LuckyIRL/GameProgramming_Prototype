@@ -9,6 +9,7 @@ TagManager:
   - MagArmPickup
   - MagneticObject
   - Collectables
+  - Enemy
   layers:
   - Default
   - TransparentFX
@@ -20,7 +21,7 @@ TagManager:
   - GrappleLayer
   - MagneticObject
   - Collectables
-  - 
+  - Enemy
   - 
   - 
   - 
