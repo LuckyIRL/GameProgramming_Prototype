@@ -8,6 +8,7 @@ public class EnemyAI : MonoBehaviour
     private Animator animator;
     private WaypointManager waypointManager;
     private EnemyStateMachine stateMachine;
+    private AudioManager audioManager;
 
     private int currentWaypoint = 0;
     public float detectionRange = 10f;
@@ -31,6 +32,7 @@ public class EnemyAI : MonoBehaviour
         animator = GetComponent<Animator>();
         waypointManager = Object.FindFirstObjectByType<WaypointManager>();
         stateMachine = GetComponent<EnemyStateMachine>();
+        audioManager = Object.FindFirstObjectByType<AudioManager>();
 
         if (waypointManager == null || waypointManager.GetWaypointCount() == 0)
         {
@@ -81,10 +83,10 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-
-
     private void HandleStates()
     {
+        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+
         switch (stateMachine.currentState)
         {
             case EnemyState.Idle:
@@ -102,14 +104,21 @@ public class EnemyAI : MonoBehaviour
                 agent.isStopped = false;
                 agent.SetDestination(lastKnownPosition);
 
-                // Slow down if close to avoid excessive pushing
+                // Check if player is in attack range -> Start Dancing!
+                if (distanceToPlayer < attackRange)
+                {
+                    stateMachine.ChangeState(EnemyState.Dancing);
+                    return;
+                }
+
+                // Slow down if close to last known position
                 if (agent.remainingDistance < 2f)
                 {
-                    agent.speed = 1f;  // Slow speed near target
+                    agent.speed = 1f;
                 }
                 else
                 {
-                    agent.speed = 3.5f; // Normal speed
+                    agent.speed = 3.5f;
                 }
 
                 if (!agent.pathPending && agent.remainingDistance < 1f)
@@ -120,18 +129,23 @@ public class EnemyAI : MonoBehaviour
 
             case EnemyState.Searching:
                 agent.isStopped = false;
-                WanderRandomly(); // Implement a wandering behavior
+                WanderRandomly();
+
+                // Check if player is in attack range -> Start Dancing!
+                if (distanceToPlayer < attackRange)
+                {
+                    stateMachine.ChangeState(EnemyState.Dancing);
+                    return;
+                }
                 break;
 
-            // Check if the player is inside the attack range and dance
             case EnemyState.Dancing:
-                if (Vector3.Distance(transform.position, player.position) < attackRange)
-                {
-                    Dance();
-                }
+                agent.isStopped = true;
+                Dance();
                 break;
         }
     }
+
 
     private void WanderRandomly()
     {
@@ -171,29 +185,24 @@ public class EnemyAI : MonoBehaviour
             Debug.LogError(" Next waypoint is NULL!");
         }
     }
-
     private void Dance()
     {
         Debug.Log("The AI is dancing!");
 
-        agent.isStopped = true;
+        // Play dance audio
+        //DanceAudio();
+
         animator.SetTrigger("Dance");
 
-        // Play Dance Sound
-        AudioSource audioSource = GetComponent<AudioSource>();
-        if (audioSource && audioSource.clip)
-        {
-            audioSource.Play();
-        }
-
-        Invoke(nameof(ResumePatrolling), 5f);
+        // Stay in Dance state for a few seconds, then resume patrol
+        Invoke(nameof(ResumePatrolling), 13f);
     }
+
 
 
     private void ResumePatrolling()
     {
         Debug.Log(" AI finished dancing, returning to patrol.");
-        agent.isStopped = false;
         stateMachine.ChangeState(EnemyState.Patrolling);
     }
 
@@ -201,8 +210,18 @@ public class EnemyAI : MonoBehaviour
     {
         float speed = agent.velocity.magnitude;
         animator.SetFloat("Speed", speed);
+
+        animator.SetBool("IsSearching", stateMachine.currentState == EnemyState.Searching);
+        animator.SetBool("IsDancing", stateMachine.currentState == EnemyState.Dancing);
     }
 
+    public void PlayDanceAudio()
+    {
+        if (AudioManager.instance != null)
+        {
+            AudioManager.instance.PlayAudioClip(0);
+        }
+    }
 
     private void OnDrawGizmos()
     {
@@ -214,6 +233,12 @@ public class EnemyAI : MonoBehaviour
 
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, attackRange);
+
+        Gizmos.color = Color.magenta;
+        Gizmos.DrawWireSphere(lastKnownPosition, 0.5f);
+
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, soundDetectionThreshold);
 
         // Draw Vision Cone
         Gizmos.color = Color.green;
