@@ -22,13 +22,13 @@ public class PlayerController : MonoBehaviour
     float vertInput;
     float horizontalInput;
 
-    private NavMeshAgent agent;
+    //private NavMeshAgent agent;
 
     private void Start()
     {
         //get the Animator Controller Component from the character component hierarchy
-        animator = GetComponent<Animator>();
-        agent = GetComponent<NavMeshAgent>();
+        //animator = GetComponent<Animator>();
+        //agent = GetComponent<NavMeshAgent>();
     }
 
     private void OnMove(InputValue value)
@@ -53,14 +53,14 @@ public class PlayerController : MonoBehaviour
         ApplyGravity();
         GroundCheck();
 
-        if (Input.GetMouseButtonDown(0)) // Left Click
-        {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit hit))
-            {
-                agent.SetDestination(hit.point);
-            }
-        }
+        //if (Input.GetMouseButtonDown(0)) // Left Click
+        //{
+        //    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        //    if (Physics.Raycast(ray, out RaycastHit hit))
+        //    {
+        //        agent.SetDestination(hit.point);
+        //    }
+        //}
 
         //// Set the vAxisInput parameter for animation (use absolute to handle backwards movement too)
         //float movementAmount = Mathf.Abs(playerInput.y);
@@ -119,17 +119,16 @@ public class PlayerController : MonoBehaviour
         //    Debug.Log("No Run");
         //}
         // Detect X Key press
-        if (Input.GetKey(KeyCode.X))
-        {
-            // Set the Crouch Layer Weight to 0.5, this
-            // activtes the masked couch animation
-            animator.SetLayerWeight(1, 0.5f);
-        }
-        else
-        {
-            // Set the Couch Layer Weight back to 0.0
-            // This deactivated the crouch animation
-            animator.SetLayerWeight(1, 0.0f);
-        }
+        //if (Input.GetKey(KeyCode.X))
+        //{
+        //    // Set the Crouch Layer Weight to 0.5, this
+        //    // activtes the masked couch animation
+        //    animator.SetLayerWeight(1, 0.5f);
+        //}
+        //else
+        //    // Set the Couch Layer Weight back to 0.0
+        //    // This deactivated the crouch animation
+        //    animator.SetLayerWeight(1, 0.0f);
+        //}
     }
 }
