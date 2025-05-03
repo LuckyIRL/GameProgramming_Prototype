@@ -6,6 +6,7 @@ public class MagneticArm : MonoBehaviour
     public Transform magnetSpawnPoint;    // Position where the magnet effect originates
     public LayerMask magneticLayer;       // Layer for magnetic objects
     public GameObject magArm;
+    public GameObject magneticFieldEffect;
 
     [Header("Settings")]
     public float attractionForce = 20f;   // Strength of the pulling force
@@ -24,20 +25,21 @@ public class MagneticArm : MonoBehaviour
         playerRb = GetComponent<Rigidbody>();
     }
 
-    void Update()
+    
+
+    private void Update()
     {
+        magneticFieldEffect.SetActive(targetObject != null);
+
         DetectMagneticObjects();
 
         if (Input.GetKeyDown(attractObjectKey))
-        {
             PullObjectToPlayer();
-        }
 
         if (Input.GetKeyDown(pullToObjectKey))
-        {
             PullPlayerToObject();
-        }
     }
+
 
     private void DetectMagneticObjects()
     {

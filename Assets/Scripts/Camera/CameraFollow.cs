@@ -15,7 +15,7 @@ public class CameraFollow : MonoBehaviour
 
     void Start()
     {
-        Cursor.lockState = CursorLockMode.Locked; // Lock the cursor to the screen
+        //Cursor.lockState = CursorLockMode.Locked; // Lock the cursor to the screen
     }
 
     void Update()

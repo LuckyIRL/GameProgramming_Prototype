@@ -1,5 +1,5 @@
+using System;
 using UnityEngine;
-using UnityEngine.AI;
 using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
@@ -7,12 +7,15 @@ public class PlayerController : MonoBehaviour
     RobotInputActions robotInputActions;
     private Vector2 playerInput;
     [SerializeField] CharacterController controller;
-    [SerializeField] private float walkSpeed = 5.0f;
-    [SerializeField] private float runSpeed = 10.0f;
-    [SerializeField] private float playerRotation = 200.0f;
+    [SerializeField] private float baseWalkSpeed = 5.0f;
+    [SerializeField] private float baseRunSpeed = 10.0f;
+    [SerializeField] private float basePlayerRotation = 200.0f;
     [SerializeField] private float gravity = 9.8f;
     public bool isGrounded;
     public Collider groundCollider;
+
+    // Reference to the GameManager
+    private GameManager gameManager;
 
     //setup a variable to point to the Animator Controller for the character]
     private Animator animator;
@@ -22,13 +25,13 @@ public class PlayerController : MonoBehaviour
     float vertInput;
     float horizontalInput;
 
-    //private NavMeshAgent agent;
-
     private void Start()
     {
-        //get the Animator Controller Component from the character component hierarchy
-        //animator = GetComponent<Animator>();
-        //agent = GetComponent<NavMeshAgent>();
+        // Get the GameManager instance
+        gameManager = GameManager.instance;
+
+        // Set the player's position from the saved game status
+        transform.position = gameManager.soGameManager.gameStatus.playerPosition;
     }
 
     private void OnMove(InputValue value)
@@ -39,12 +42,17 @@ public class PlayerController : MonoBehaviour
     private void PlayerMovement()
     {
         // Determine current speed (running or walking)
-        currentSpeed = isRunning ? runSpeed : walkSpeed;
+        currentSpeed = isRunning ? baseRunSpeed : baseWalkSpeed;
 
+        // Apply move speed upgrade
+        currentSpeed += gameManager.soGameManager.gameStatus.moveSpeedUpgrade.level * 1.0f;
 
         // Move and rotate player
         controller.Move(transform.forward * playerInput.y * currentSpeed * Time.deltaTime);
-        transform.Rotate(transform.up, playerRotation * playerInput.x * Time.deltaTime);
+        transform.Rotate(transform.up, (basePlayerRotation + gameManager.soGameManager.gameStatus.turnSpeedUpgrade.level * 10.0f) * playerInput.x * Time.deltaTime);
+
+        // Update the player's position in the SO_GameManager
+        gameManager.soGameManager.gameStatus.playerPosition = transform.position;
     }
 
     void Update()
@@ -52,35 +60,14 @@ public class PlayerController : MonoBehaviour
         PlayerMovement();
         ApplyGravity();
         GroundCheck();
-
-        //if (Input.GetMouseButtonDown(0)) // Left Click
-        //{
-        //    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        //    if (Physics.Raycast(ray, out RaycastHit hit))
-        //    {
-        //        agent.SetDestination(hit.point);
-        //    }
-        //}
-
-        //// Set the vAxisInput parameter for animation (use absolute to handle backwards movement too)
-        //float movementAmount = Mathf.Abs(playerInput.y);
-        //animator.SetFloat("vAxisInput", movementAmount);
-
-        //// Set the hAxisInput parameter for animation
-        //animator.SetFloat("hAxisInput", playerInput.x);
-
-        //// Set running flag for animation
-        //animator.SetBool("isRunning", isRunning);
-
-        //// Check for running input (Shift key)
-        //isRunning = Keyboard.current.leftShiftKey.isPressed; ;
     }
 
     private void ApplyGravity()
     {
         if (!isGrounded)
         {
-            controller.Move(Vector3.down * gravity * Time.deltaTime);
+            Vector3 gravityVector = Vector3.down * gravity * Time.deltaTime;
+            controller.Move(gravityVector);
         }
     }
 
@@ -96,39 +83,5 @@ public class PlayerController : MonoBehaviour
             isGrounded = false;
             groundCollider = null;
         }
-    }
-
-    void FixedUpdate()
-    {
-        //use fixed update to control the animation as it will behave in real time
-        //now set the animator float value (vAxisInput) with the input value
-        //animator.SetFloat("vAxisInput", vertInput);
-
-        //animator.SetFloat("hAxisInput", horizontalInput);
-        //// Detect Z Key press
-        //if (Input.GetKey(KeyCode.Z))
-        //{
-        //    // Set runBool to true if pressed
-        //    animator.SetBool("runBool", true);
-        //    Debug.Log("Run");
-        //}
-        //else
-        //{
-        //    // Set runBool to false if not pressed
-        //    animator.SetBool("runBool", false);
-        //    Debug.Log("No Run");
-        //}
-        // Detect X Key press
-        //if (Input.GetKey(KeyCode.X))
-        //{
-        //    // Set the Crouch Layer Weight to 0.5, this
-        //    // activtes the masked couch animation
-        //    animator.SetLayerWeight(1, 0.5f);
-        //}
-        //else
-        //    // Set the Couch Layer Weight back to 0.0
-        //    // This deactivated the crouch animation
-        //    animator.SetLayerWeight(1, 0.0f);
-        //}
     }
 }

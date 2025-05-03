@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76755fe0965112c4a9c5dd6688819ede, type: 3}
+  m_Name: GameManagerData
+  m_EditorClassIdentifier: 
+  gameStatus:
+    playerName: YoMomma
+    playerPosition: {x: 87.015816, y: 2.186533, z: 89.26617}
+    health: 100
+    cogWheels: 4
+    coinsCollected: 0
+    currentLevel: 1
+    spawnPoint: 
+    NPCs:
+    - {x: 22, y: 0.5, z: -22}
+    - {x: 0, y: 0.5, z: -22}
+    - {x: -22, y: 0.5, z: -22}
+    - {x: 22, y: 0.5, z: 0}
+    - {x: -22, y: 0.5, z: 0}
+    - {x: -22, y: 0.5, z: 22}
+    - {x: 0, y: 0.5, z: 22}
+    - {x: 22, y: 0.5, z: 22}
+    totalPlaytime: 725.40826
+    enemiesDefeated: 0
+    highScore: 0
+    previousScore: 0
+    moveSpeedUpgrade:
+      level: 3
+      initialCost: 2
+      costIncrement: 1
+    turnSpeedUpgrade:
+      level: 2
+      initialCost: 1
+      costIncrement: 1
+    environmentState: Default
+    weather: 
+    timeOfDay: 
+    terrainType: 
+    sceneObjects:
+    - sceneObject: {fileID: 367382623765599115, guid: be961f3010362e94c9a1237777c9118b, type: 3}
+      objectName: 
+      position: {x: 0, y: 0, z: 0}
