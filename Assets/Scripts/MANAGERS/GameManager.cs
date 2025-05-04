@@ -84,12 +84,12 @@ public class GameManager : MonoBehaviour
     //this function overrides the saving file
     public void SaveGameStatus()
     {
-        Debug.Log("Saving game status...");
+        //Debug.Log("Saving game status...");
         //serialise the GameStatus struct into a Json string
         string gameStatusJson = JsonUtility.ToJson(soGameManager.gameStatus);
         //write a text file containing the string value as simple text
         File.WriteAllText(filePath + "/" + FILE_NAME, gameStatusJson);
-        Debug.Log("File created and saved: " + gameStatusJson);
+        //Debug.Log("File created and saved: " + gameStatusJson);
     }
 
     // Use this for initialization

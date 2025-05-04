@@ -10,9 +10,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float baseWalkSpeed = 5.0f;
     [SerializeField] private float baseRunSpeed = 10.0f;
     [SerializeField] private float basePlayerRotation = 200.0f;
-    [SerializeField] private float gravity = 9.8f;
+    [SerializeField] private float gravity = 30f;
     public bool isGrounded;
     public Collider groundCollider;
+    private float verticalVelocity = 0f;
 
     // Reference to the GameManager
     private GameManager gameManager;
@@ -64,12 +65,20 @@ public class PlayerController : MonoBehaviour
 
     private void ApplyGravity()
     {
-        if (!isGrounded)
+        if (isGrounded)
         {
-            Vector3 gravityVector = Vector3.down * gravity * Time.deltaTime;
-            controller.Move(gravityVector);
+            if (verticalVelocity < 0)
+                verticalVelocity = -2f; // Small downward force to keep grounded
         }
+        else
+        {
+            verticalVelocity -= gravity * Time.deltaTime;
+        }
+
+        Vector3 gravityVector = new Vector3(0, verticalVelocity, 0);
+        controller.Move(gravityVector * Time.deltaTime);
     }
+
 
     private void GroundCheck()
     {

@@ -68,6 +68,12 @@ public class GrappleHook : MonoBehaviour
                 Shoot();
         }
 
+        // Release grapple when left mouse button is released
+        if (Input.GetMouseButtonUp(0) && isGrappling)
+        {
+            ReleaseGrapple();
+        }
+
         if (isGrappling)
             UpdateGrapple();
 
@@ -231,6 +237,6 @@ public class GrappleHook : MonoBehaviour
     private void ActivateGrappleArm()
     {
         grappleArm.SetActive(true);
-        Debug.Log("Grapple Arm Activated!");
+        //Debug.Log("Grapple Arm Activated!");
     }
 }
