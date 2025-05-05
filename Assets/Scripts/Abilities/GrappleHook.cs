@@ -15,6 +15,14 @@ public class GrappleHook : MonoBehaviour
     public float grappleWidth = 0.2f;
     private LineRenderer lineRenderer;
 
+    [Header("Trail Effect")]
+    public GameObject projectileTrailPrefab;
+
+    [Header("Materials")]
+    public Material projectileMaterial;
+    public Material grappleMaterial;
+
+
     [Header("Settings")]
     public Transform firePoint;
     public float grappleSpeed = 20f;
@@ -124,6 +132,12 @@ public class GrappleHook : MonoBehaviour
         projectile.transform.position = grappleOrigin.position;
         projectile.transform.localScale = Vector3.one * 0.5f;
 
+        if (projectileMaterial != null)
+        {
+            Renderer rend = projectile.GetComponent<Renderer>();
+            rend.material = projectileMaterial;
+        }
+
         Rigidbody rb = projectile.AddComponent<Rigidbody>();
         rb.mass = 1.0f;
         rb.useGravity = true;
@@ -136,8 +150,16 @@ public class GrappleHook : MonoBehaviour
         float shootForce = 20.0f;
         rb.AddForce(grappleOrigin.forward * shootForce, ForceMode.Impulse);
 
-        Destroy(projectile, 5f);
+        // Attach the trail effect
+        if (projectileTrailPrefab != null)
+        {
+            GameObject trail = Instantiate(projectileTrailPrefab, projectile.transform.position, Quaternion.identity);
+            trail.transform.SetParent(projectile.transform); // so it follows the projectile
+        }
+
+        Destroy(projectile, 5f); // auto-cleanup
     }
+
 
     private void HandleADS()
     {
@@ -185,9 +207,7 @@ public class GrappleHook : MonoBehaviour
         grappleObject.transform.localPosition = Vector3.zero;
 
         lineRenderer = grappleObject.AddComponent<LineRenderer>();
-        lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
-        lineRenderer.startColor = Color.red;
-        lineRenderer.endColor = Color.red;
+        lineRenderer.material = grappleMaterial;
         lineRenderer.startWidth = 0.05f;
         lineRenderer.endWidth = 0.05f;
         lineRenderer.positionCount = 2;

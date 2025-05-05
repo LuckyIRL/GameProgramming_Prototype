@@ -15,29 +15,36 @@ public class MagneticArm : MonoBehaviour
     public KeyCode attractObjectKey = KeyCode.F;  // Pull object toward player
     public KeyCode pullToObjectKey = KeyCode.G;   // Pull player toward object
 
-    private Rigidbody playerRb;
+    private CharacterController characterController;
     private Transform targetObject;
     //private bool isPullingObject = false;
     //private bool isPullingPlayer = false;
 
     void Start()
     {
-        playerRb = GetComponent<Rigidbody>();
+        characterController = GetComponent<CharacterController>();
     }
 
-    
+
 
     private void Update()
     {
-        magneticFieldEffect.SetActive(targetObject != null);
-
         DetectMagneticObjects();
 
-        if (Input.GetKeyDown(attractObjectKey))
+        bool targetExists = targetObject != null;
+        magneticFieldEffect.SetActive(targetExists);
+
+        if (targetExists)
+        {
+            UpdateMagneticFieldVisual();
+        }
+
+        if (Input.GetKey(attractObjectKey))
             PullObjectToPlayer();
 
-        if (Input.GetKeyDown(pullToObjectKey))
+        if (Input.GetKey(pullToObjectKey))
             PullPlayerToObject();
+
     }
 
 
@@ -51,18 +58,39 @@ public class MagneticArm : MonoBehaviour
             if (hit.collider.CompareTag("MagneticObject"))
             {
                 targetObject = hit.collider.transform;
+                magneticFieldEffect.SetActive(true);
                 Debug.Log("Magnetic object detected: " + hit.collider.name);
-            }
-            else
-            {
-                targetObject = null;
+                return; // early exit
             }
         }
-        else
-        {
-            targetObject = null;
-        }
+
+        // No hit or not a magnetic object
+        targetObject = null;
+        magneticFieldEffect.SetActive(false);
     }
+
+
+    private void UpdateMagneticFieldVisual()
+    {
+        Vector3 start = magnetSpawnPoint.position;
+        Vector3 end = targetObject.position;
+        Vector3 direction = end - start;
+
+        // Position halfway between magnet and object
+        magneticFieldEffect.transform.position = start + direction / 2f;
+
+        // Rotate the field to face the target
+        magneticFieldEffect.transform.rotation = Quaternion.LookRotation(direction);
+
+        // Scale length-wise based on distance
+        float distance = direction.magnitude;
+        magneticFieldEffect.transform.localScale = new Vector3(
+            0.1f,  // Width (adjust as needed)
+            0.1f,  // Height
+            distance  // Length toward target
+        );
+    }
+
 
     private void PullObjectToPlayer()
     {
@@ -86,16 +114,13 @@ public class MagneticArm : MonoBehaviour
 
     private void PullPlayerToObject()
     {
-        if (targetObject != null)
+        if (targetObject != null && characterController != null)
         {
-            Vector3 forceDirection = (targetObject.position - playerRb.position).normalized;
-            playerRb.AddForce(forceDirection * playerPullSpeed, ForceMode.Acceleration);
-
-            Debug.Log("Pulling player towards object with force: " + forceDirection);
+            Vector3 direction = (targetObject.position - transform.position).normalized;
+            characterController.Move(direction * playerPullSpeed * Time.deltaTime);
+            Debug.Log("Pulling player toward object (CharacterController)");
         }
     }
-
-
 
     private void OnTriggerEnter(Collider other)
     {
