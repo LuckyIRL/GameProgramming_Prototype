@@ -14,22 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameStatus:
     playerName: YoMomma
-    playerPosition: {x: 78.62333, y: 0.87499976, z: 78.416534}
+    playerPosition: {x: 71.846695, y: 0.8749999, z: 78.04422}
     health: 100
-    cogWheels: 19
+    cogWheels: 28
     coinsCollected: 0
     currentLevel: 1
     spawnPoint: 
-    NPCs:
-    - {x: 22, y: 0.5, z: -22}
-    - {x: 0, y: 0.5, z: -22}
-    - {x: -22, y: 0.5, z: -22}
-    - {x: 22, y: 0.5, z: 0}
-    - {x: -22, y: 0.5, z: 0}
-    - {x: -22, y: 0.5, z: 22}
-    - {x: 0, y: 0.5, z: 22}
-    - {x: 22, y: 0.5, z: 22}
-    totalPlaytime: 1837.5796
+    NPCs: []
+    totalPlaytime: 3139.127
     enemiesDefeated: 0
     highScore: 0
     previousScore: 0
@@ -45,7 +37,4 @@ MonoBehaviour:
     weather: 
     timeOfDay: 
     terrainType: 
-    sceneObjects:
-    - sceneObject: {fileID: 0}
-      objectName: 
-      position: {x: 0, y: 0, z: 0}
+    sceneObjects: []
