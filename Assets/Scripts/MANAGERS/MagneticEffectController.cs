@@ -29,7 +29,7 @@ public class MagneticEffectController : MonoBehaviour
 
     public void TriggerEffect()
     {
-        Debug.Log("Activating fullscreen magnetic effect!");
+        //Debug.Log("Activating fullscreen magnetic effect!");
         isActive = true;
         Shader.SetGlobalFloat(shaderProperty, activeValue);  // turn effect on
         Invoke(nameof(ResetEffect), effectDuration);          // schedule turn off

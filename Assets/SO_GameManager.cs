@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System;
 
 [Serializable]
-// Create a struct for Upgrades
+// Struct for Upgrades
 public struct Upgrade
 {
     public int level;
@@ -17,14 +17,15 @@ public struct GameStatus
 {
     [Header("Player Data")]
     public string playerName;
-    public Vector3 playerPosition;
+    //public Vector3 playerPosition;
+    public Transform playerPosition; // Changed to Transform for spawn point
     public int health;
     public int cogWheels;
     public int coinsCollected;
 
     [Header("Game Data")]
     public int currentLevel;
-    public string spawnPoint; // Change to GameObject if needed  
+    public string spawnPoint;   
     public List<Vector3> NPCs;
     public float totalPlaytime; 
     public int enemiesDefeated; 
@@ -59,7 +60,7 @@ public class SO_GameManager : ScriptableObject
     // Use this for initialization
     public void Start()
     {
-        LoadGameStatus();
+        //LoadGameStatus();
     }
 
     //this function loads a saving file if found
@@ -89,15 +90,8 @@ public class SO_GameManager : ScriptableObject
         gameStatus.health = 100;
         gameStatus.cogWheels = 0;
         gameStatus.coinsCollected = 0;
-        gameStatus.playerPosition = new Vector3(0, 0, 0);
-        gameStatus.NPCs = new List<Vector3>(){  new Vector3(22.0f,0.5f,-22.0f),
-                                            new Vector3(0.0f,0.5f,-22.0f),
-                                            new Vector3(-22.0f,0.5f,-22.0f),
-                                            new Vector3(22.0f,0.5f,0.0f),
-                                            new Vector3(-22.0f,0.5f,0.0f),
-                                            new Vector3(-22.0f,0.5f,22.0f),
-                                            new Vector3(0.0f,0.5f,22.0f),
-                                            new Vector3(22.0f,0.5f,22.0f)};
+        gameStatus.playerPosition = null; // Set to null initially
+        gameStatus.NPCs = new List<Vector3>(){  new Vector3(70, 0, 65) }; 
         gameStatus.totalPlaytime = 0f; // Initialize this field
         gameStatus.enemiesDefeated = 0; // Initialize this field
         gameStatus.environmentState = "Default"; // Initialize this field

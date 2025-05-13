@@ -19,6 +19,8 @@ public class GameManager : MonoBehaviour
     // Reference to the SO_GameManager Scriptable Object
     public SO_GameManager soGameManager;
 
+    public Transform playerSpawnPoint;
+
     string filePath;
     const string FILE_NAME = "SaveStatus.json";
 
@@ -65,21 +67,19 @@ public class GameManager : MonoBehaviour
         //always check the file exists
         if (File.Exists(filePath + "/" + FILE_NAME))
         {
-            //load the file content as string
             string loadedJson = File.ReadAllText(filePath + "/" + FILE_NAME);
-            //deserialise the loaded string into a GameStatus struct
             soGameManager.gameStatus = JsonUtility.FromJson<GameStatus>(loadedJson);
-            //Debug.Log("File loaded successfully: " + loadedJson);
+            UpdatePlayerPosition(); //Only update position if save exists
         }
         else
         {
-            //initilise a new game status
             soGameManager.resetGame();
             Debug.Log("File not found, initializing new game status");
         }
+
         UpdateCogWheelText();
-        UpdatePlayerPosition();
     }
+
 
     //this function overrides the saving file
     public void SaveGameStatus()
@@ -166,13 +166,13 @@ public class GameManager : MonoBehaviour
 
     private void UpdatePlayerPosition()
     {
-        // Find the player object and set its position from the saved game status
         GameObject player = GameObject.FindWithTag("Player");
-        if (player != null)
+        if (player != null && playerSpawnPoint != null)
         {
-            player.transform.position = soGameManager.gameStatus.playerPosition;
+            player.transform.position = playerSpawnPoint.position;
         }
     }
+
 
     // Method to purchase move speed upgrade
     public void PurchaseMoveSpeedUpgrade()

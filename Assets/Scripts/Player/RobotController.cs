@@ -28,14 +28,14 @@ public class RobotController : MonoBehaviour
         {
             MoveToClickPoint();
 
-            if (agent.velocity.magnitude > 0)
-            {
-                SoundManager.Instance.MakeNoise(1.5f);  // Running makes noise
-            }
-            else
-            {
-                SoundManager.Instance.MakeNoise(0);  // Stop making noise
-            }
+            //if (agent.velocity.magnitude > 0)
+            //{
+            //    SoundManager.Instance.MakeNoise(1.5f);  // Running makes noise
+            //}
+            //else
+            //{
+            //    SoundManager.Instance.MakeNoise(0);  // Stop making noise
+            //}
         }
 
         // Stop movement if close enough to the target

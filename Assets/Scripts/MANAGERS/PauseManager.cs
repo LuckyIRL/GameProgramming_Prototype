@@ -11,6 +11,7 @@ public class PauseManager : MonoBehaviour
     public Button quitButton;
     private bool isPaused = false;
     private RobotInputActions inputActions;
+    public SceneManager sceneManager;
 
     void Awake()
     {
@@ -72,7 +73,8 @@ public class PauseManager : MonoBehaviour
     public void QuitGame()
     {
         Time.timeScale = 1;
-        SceneManager.LoadScene("MainMenu");
+        // Load the main menu or quit the game
+        sceneManager.LoadScene("MainMenu");
     }
 
     private void EnableCursor()

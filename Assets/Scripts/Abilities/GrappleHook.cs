@@ -15,6 +15,8 @@ public class GrappleHook : MonoBehaviour
     public float grappleWidth = 0.2f;
     private LineRenderer lineRenderer;
     private GameObject activeProjectile;
+    public AudioClip[] projectileImpactSounds;
+
 
     [Header("Trail Effect")]
     public GameObject projectileTrailPrefab;
@@ -153,7 +155,7 @@ public class GrappleHook : MonoBehaviour
 
     void Shoot()
     {
-        Debug.Log("Shoot Mode Active - Implement shooting here");
+        //Debug.Log("Shoot Mode Active");
 
         GameObject projectile = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         activeProjectile = projectile;
@@ -172,9 +174,18 @@ public class GrappleHook : MonoBehaviour
         rb.useGravity = true;
         rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
 
+        // Add noise component to the projectile
+        var noiseScript = projectile.AddComponent<ProjectileNoise>();
+        noiseScript.noiseIntensity = 1.5f; // Adjust as needed
+        // Create a random impact sound from the array
+        if (projectileImpactSounds.Length > 0)
+        {
+            noiseScript.impactSound = projectileImpactSounds[Random.Range(0, projectileImpactSounds.Length)];
+        }
+
         SphereCollider collider = projectile.GetComponent<SphereCollider>();
         collider.material = CreatePhysicsMaterial();
-        collider.isTrigger = true;
+        //collider.isTrigger = true;
 
         float shootForce = 20.0f;
         rb.AddForce(grappleOrigin.forward * shootForce, ForceMode.Impulse);
@@ -225,6 +236,15 @@ public class GrappleHook : MonoBehaviour
             rb.mass = 0.5f;
             rb.useGravity = true;
             rb.AddForce(direction * 10f, ForceMode.Impulse);
+
+            // Add noise component to the child projectile
+            var noiseScript = child.AddComponent<ProjectileNoise>();
+            if (projectileImpactSounds.Length > 0)
+            {
+                noiseScript.impactSound = projectileImpactSounds[Random.Range(0, projectileImpactSounds.Length)];
+            }
+            noiseScript.noiseIntensity = 1.5f;
+
 
             Destroy(child, 3f);
         }
@@ -292,17 +312,18 @@ public class GrappleHook : MonoBehaviour
 
     private PhysicsMaterial CreatePhysicsMaterial()
     {
-        PhysicsMaterial newMaterial = new PhysicsMaterial("GrappleMaterial")
+        PhysicsMaterial bounceMaterial = new PhysicsMaterial("BouncyMaterial")
         {
-            dynamicFriction = 0.4f,
-            staticFriction = 0.6f,
-            bounciness = 0.2f,
-            frictionCombine = PhysicsMaterialCombine.Average,
+            bounciness = 1.0f,
+            dynamicFriction = 0f,
+            staticFriction = 0f,
+            frictionCombine = PhysicsMaterialCombine.Minimum,
             bounceCombine = PhysicsMaterialCombine.Maximum
         };
 
-        return newMaterial;
+        return bounceMaterial;
     }
+
 
     private void OnGrappleSuccess()
     {

@@ -7,12 +7,7 @@ public class MagneticArm : MonoBehaviour
     public LayerMask magneticLayer;       // Layer for magnetic objects
     public GameObject magArm;
     public GameObject magneticFieldEffect;
-    public HealthBar energyBar;
 
-    [Header("Energy Usage")]
-    public float energyDrainRate = 5f; // per second
-    private bool isEnergyDepleted = false;
-    public MagneticEffectController effectController; // assign in Inspector
 
     [Header("Settings")]
     public float attractionForce = 20f;   // Strength of the pulling force
@@ -34,7 +29,6 @@ public class MagneticArm : MonoBehaviour
 
     private void Update()
     {
-        if (isEnergyDepleted) return;
 
         DetectMagneticObjects();
 
@@ -48,7 +42,6 @@ public class MagneticArm : MonoBehaviour
 
         if (Input.GetKey(attractObjectKey) || Input.GetKey(pullToObjectKey))
         {
-            energyBar.Drain(energyDrainRate * Time.deltaTime);
 
             if (Input.GetKey(attractObjectKey)) PullObjectToPlayer();
             if (Input.GetKey(pullToObjectKey)) PullPlayerToObject();
@@ -66,7 +59,7 @@ public class MagneticArm : MonoBehaviour
             {
                 targetObject = hit.collider.transform;
                 magneticFieldEffect.SetActive(true);
-                Debug.Log("Magnetic object detected: " + hit.collider.name);
+                //Debug.Log("Magnetic object detected: " + hit.collider.name);
                 return; // early exit
             }
         }
@@ -128,31 +121,6 @@ public class MagneticArm : MonoBehaviour
             characterController.Move(direction * playerPullSpeed * Time.deltaTime);
             Debug.Log("Pulling player toward object (CharacterController)");
         }
-    }
-    public void OnEnergyDepleted()
-    {
-        Debug.Log("Energy depleted! Triggering magnetic overload...");
-        isEnergyDepleted = true;
-
-        effectController.TriggerEffect(); // trigger the post-processing shader
-
-        Invoke(nameof(ResetEnergy), 3f);
-    }
-
-    private void ResetEnergy()
-    {
-        energyBar.Regenerate(+5);
-        isEnergyDepleted = false;
-    }
-
-    private void OnEnable()
-    {
-        energyBar.onEnergyDepleted.AddListener(OnEnergyDepleted);
-    }
-
-    private void OnDisable()
-    {
-        energyBar.onEnergyDepleted.RemoveListener(OnEnergyDepleted);
     }
 
     private void OnTriggerEnter(Collider other)

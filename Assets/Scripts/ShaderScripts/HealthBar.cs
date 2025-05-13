@@ -9,7 +9,7 @@ public class HealthBar : MonoBehaviour
     [SerializeField] private Image healthBarTrailingImage;
     [SerializeField] private float trailDelay = 0.5f;
     [SerializeField] private float maxHealth = 100f;
-    [SerializeField] private float regenerationRate = 5f; // Health per second
+    //[SerializeField] private float regenerationRate = 5f; // Health per second
     [SerializeField] private float criticalThreshold = 0.2f; // 20% energy
     private bool hasDepleted = false;
 
@@ -40,12 +40,21 @@ public class HealthBar : MonoBehaviour
         sequence.Append(healthBarTrailingImage.DOFillAmount(ratio, 0.3f).SetEase(Ease.InOutSine));
         sequence.Play();
 
+        // Only trigger low energy warning once
         if (!hasDepleted && ratio <= criticalThreshold)
         {
             hasDepleted = true;
+            // Debug.Log("Warning: Energy low!");
+            // You could raise a separate event here if needed, like onLowEnergy?.Invoke();
+        }
+
+        // Actual depletion logic (when energy fully drains)
+        if (currentHealth <= 0f)
+        {
             onEnergyDepleted?.Invoke();
         }
     }
+
 
     public void Regenerate(float amount)
     {
@@ -66,4 +75,24 @@ public class HealthBar : MonoBehaviour
         healthBarFillImage.fillAmount = 1f;
         healthBarTrailingImage.fillAmount = 1f;
     }
+
+    public void StartRegenerationOverTime(float regenAmountPerSecond, float delayBeforeStart = 0f)
+    {
+        StopAllCoroutines();
+        StartCoroutine(RegenerateOverTime(regenAmountPerSecond, delayBeforeStart));
+    }
+
+    private System.Collections.IEnumerator RegenerateOverTime(float regenAmountPerSecond, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        while (currentHealth < maxHealth)
+        {
+            Regenerate(regenAmountPerSecond);
+            yield return null;
+        }
+
+        hasDepleted = false; // Allow future energy depletion events
+    }
+
 }

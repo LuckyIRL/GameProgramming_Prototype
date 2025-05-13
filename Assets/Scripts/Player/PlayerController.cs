@@ -1,4 +1,5 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -31,9 +32,16 @@ public class PlayerController : MonoBehaviour
         // Get the GameManager instance
         gameManager = GameManager.instance;
 
-        // Set the player's position from the saved game status
-        transform.position = gameManager.soGameManager.gameStatus.playerPosition;
+        // Set the player's position as the spawn point transform
+        if (gameManager != null && gameManager.soGameManager != null)
+        {
+            // Set the player's position to the spawn point
+            transform.position = gameManager.soGameManager.gameStatus.playerPosition.position;
+        }
     }
+
+
+
 
     private void OnMove(InputValue value)
     {
@@ -53,7 +61,25 @@ public class PlayerController : MonoBehaviour
         transform.Rotate(transform.up, (basePlayerRotation + gameManager.soGameManager.gameStatus.turnSpeedUpgrade.level * 10.0f) * playerInput.x * Time.deltaTime);
 
         // Update the player's position in the SO_GameManager
-        gameManager.soGameManager.gameStatus.playerPosition = transform.position;
+        //gameManager.soGameManager.gameStatus.playerPosition = transform.position;
+
+        if (SoundManager.Instance != null)
+        {
+            // Only make noise if the robot is moving
+            bool isMoving = playerInput != Vector2.zero;
+
+            if (isMoving)
+            {
+                float movementNoise = isRunning ? 1.2f : 0.6f; // Running makes more noise
+                SoundManager.Instance.MakeNoise(movementNoise, transform.position);
+            }
+            else
+            {
+                // Optional: clear noise when idle
+                SoundManager.Instance.MakeNoise(0f, Vector3.zero);
+            }
+        }
+
     }
 
     void Update()
@@ -68,7 +94,7 @@ public class PlayerController : MonoBehaviour
         if (isGrounded)
         {
             if (verticalVelocity < 0)
-                verticalVelocity = -2f; // Small downward force to keep grounded
+                verticalVelocity = -2f;
         }
         else
         {
